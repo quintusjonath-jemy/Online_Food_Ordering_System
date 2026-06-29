@@ -1,0 +1,166 @@
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { ArrowLeft, Package, MapPin, Phone, FileText, Clock } from 'lucide-react';
+import { ordersAPI } from '../services/api';
+import OrderCard from '../components/OrderCard';
+import LoadingSpinner from '../components/LoadingSpinner';
+
+const STATUS_STEPS = ['pending', 'preparing', 'out_for_delivery', 'delivered'];
+const STATUS_LABELS = {
+  pending:          'Pending',
+  preparing:        'Preparing',
+  out_for_delivery: 'Out for Delivery',
+  delivered:        'Delivered',
+  cancelled:        'Cancelled',
+};
+
+const IMAGE_BASE = 'http://localhost/uploads/';
+const FALLBACK   = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=80&q=60';
+
+function OrderDetail({ orderId }) {
+  const [order,   setOrder]   = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    ordersAPI.getById(orderId).then((r) => setOrder(r.data.order)).finally(() => setLoading(false));
+  }, [orderId]);
+
+  if (loading) return <LoadingSpinner />;
+  if (!order)  return <p>Order not found.</p>;
+
+  const stepIndex = STATUS_STEPS.indexOf(order.status);
+
+  return (
+    <div className="slide-up">
+      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <Link to="/orders" className="btn btn-ghost btn-sm"><ArrowLeft size={16} /> All Orders</Link>
+        <h2 style={{ fontWeight: 700, fontSize: 'var(--fs-xl)' }}>Order #{order.id}</h2>
+        <span className={`badge badge-${order.status}`}>{STATUS_LABELS[order.status]}</span>
+      </div>
+
+      {/* Progress tracker */}
+      {order.status !== 'cancelled' && (
+        <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
+          <h3 style={{ fontWeight: 700, marginBottom: '1.25rem', display: 'flex', gap: '0.5rem' }}><Clock size={18} /> Order Progress</h3>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '20px', left: '10%', right: '10%', height: '3px', background: 'var(--clr-border)', zIndex: 0 }} />
+            <div style={{
+              position: 'absolute', top: '20px', left: '10%',
+              width: stepIndex >= 0 ? `${(stepIndex / (STATUS_STEPS.length - 1)) * 80}%` : '0%',
+              height: '3px', background: 'var(--clr-primary)', zIndex: 1, transition: 'width 0.5s ease',
+            }} />
+            {STATUS_STEPS.map((step, i) => (
+              <div key={step} style={{ textAlign: 'center', position: 'relative', zIndex: 2, flex: 1 }}>
+                <div style={{
+                  width: 40, height: 40, borderRadius: '50%', margin: '0 auto 0.5rem',
+                  background: i <= stepIndex ? 'var(--clr-primary)' : 'var(--clr-border)',
+                  color: i <= stepIndex ? 'white' : 'var(--clr-text-muted)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
+                  border: `2px solid ${i <= stepIndex ? 'var(--clr-primary)' : 'var(--clr-border)'}`,
+                  transition: 'all 0.3s',
+                }}>
+                  {i < stepIndex ? '✓' : i + 1}
+                </div>
+                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: i <= stepIndex ? 'var(--clr-primary)' : 'var(--clr-text-muted)' }}>
+                  {STATUS_LABELS[step]}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '1.5rem', alignItems: 'start' }}>
+        {/* Items */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontWeight: 700, marginBottom: '1rem' }}>Ordered Items</h3>
+          {order.items?.map((item) => {
+            const img = item.image ? (item.image.startsWith('http') ? item.image : IMAGE_BASE + item.image) : FALLBACK;
+            return (
+              <div key={item.id} style={{ display: 'flex', gap: '1rem', padding: '0.75rem 0', borderBottom: '1px solid var(--clr-border)' }}>
+                <img src={img} alt={item.food_name} style={{ width: 56, height: 56, borderRadius: '8px', objectFit: 'cover' }} onError={(e) => { e.target.src = FALLBACK; }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700 }}>{item.food_name}</div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--clr-text-muted)' }}>×{item.quantity} @ ${Number(item.price).toFixed(2)}</div>
+                </div>
+                <div style={{ fontWeight: 800, color: 'var(--clr-primary)' }}>${(item.quantity * item.price).toFixed(2)}</div>
+              </div>
+            );
+          })}
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontWeight: 800, fontSize: '1.1rem' }}>
+            <span>Total</span>
+            <span style={{ color: 'var(--clr-primary)' }}>${Number(order.total_price).toFixed(2)}</span>
+          </div>
+        </div>
+
+        {/* Delivery info */}
+        <div className="card" style={{ padding: '1.5rem' }}>
+          <h3 style={{ fontWeight: 700, marginBottom: '1rem' }}>Delivery Info</h3>
+          {[
+            { Icon: MapPin, label: 'Address', value: order.delivery_address },
+            { Icon: Phone,  label: 'Phone',   value: order.phone },
+            { Icon: FileText, label: 'Notes', value: order.notes || '—' },
+          ].map(({ Icon, label, value }) => (
+            <div key={label} style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
+              <Icon size={18} color="var(--clr-primary)" style={{ flexShrink: 0, marginTop: '2px' }} />
+              <div>
+                <div style={{ fontSize: '0.75rem', color: 'var(--clr-text-muted)', fontWeight: 600 }}>{label}</div>
+                <div style={{ fontSize: '0.875rem', fontWeight: 500 }}>{value}</div>
+              </div>
+            </div>
+          ))}
+          <div style={{ marginTop: '1rem', padding: '0.75rem', background: 'var(--clr-bg)', borderRadius: 'var(--radius-md)', fontSize: '0.75rem', color: 'var(--clr-text-muted)' }}>
+            Ordered: {new Date(order.order_date).toLocaleString()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Orders() {
+  const { id } = useParams();
+  const [orders,  setOrders]  = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (id) { setLoading(false); return; }
+    ordersAPI.getMyOrders().then((r) => setOrders(r.data.orders ?? [])).finally(() => setLoading(false));
+  }, [id]);
+
+  if (id) return (
+    <div className="page-wrapper">
+      <div className="container section-sm">
+        {loading ? <LoadingSpinner /> : <OrderDetail orderId={id} />}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="page-wrapper">
+      <div className="container section-sm">
+        <div style={{ marginBottom: '2rem' }}>
+          <h1 style={{ fontSize: 'var(--fs-2xl)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Package size={26} color="var(--clr-primary)" /> My Orders
+          </h1>
+          <p style={{ color: 'var(--clr-text-muted)', marginTop: '0.25rem', fontSize: '0.875rem' }}>
+            {orders.length} total order{orders.length !== 1 ? 's' : ''}
+          </p>
+        </div>
+
+        {loading ? <LoadingSpinner /> : orders.length === 0 ? (
+          <div className="empty-state">
+            <div className="empty-state-icon">📦</div>
+            <h3>No orders yet</h3>
+            <p>Once you place an order, it'll appear here.</p>
+            <Link to="/menu" className="btn btn-primary" style={{ marginTop: '1.5rem' }}>Start Ordering</Link>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--sp-4)' }}>
+            {orders.map((order) => <OrderCard key={order.id} order={order} />)}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
