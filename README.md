@@ -107,7 +107,7 @@ Online_Food_Ordering/
 
 ### 2. Backend Config (XAMPP)
 Since Apache serves your backend directly as the DocumentRoot:
-Ensure the backend folder `/home/jonath/Documents/code/react/Online_Food_Ordering/backend` is set as the document root in your XAMPP configuration.
+Ensure the backend folder `/your/file/path/Online_Food_Ordering/backend` is set as the document root in your XAMPP configuration.
 
 Visiting `http://localhost/` in your browser will display the beautiful **API Status Dashboard** verifying database connectivity.
 
