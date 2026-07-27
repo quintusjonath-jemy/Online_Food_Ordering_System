@@ -21,6 +21,10 @@ import ManageFoods       from './pages/admin/ManageFoods';
 import ManageCategories  from './pages/admin/ManageCategories';
 import ManageOrders      from './pages/admin/ManageOrders';
 import ManageUsers       from './pages/admin/ManageUsers';
+import ManageReservations from './pages/admin/ManageReservations';
+
+// Customer pages
+import BookTable from './pages/BookTable';
 
 /**
  * Customer layout — includes Navbar
@@ -73,6 +77,7 @@ function AppRoutes() {
           <Route path="/orders"      element={<Orders />} />
           <Route path="/orders/:id"  element={<Orders />} />
           <Route path="/profile"     element={<Profile />} />
+          <Route path="/book-table"  element={<BookTable />} />
         </Route>
       </Route>
 
@@ -83,6 +88,7 @@ function AppRoutes() {
         <Route path="/admin/categories"  element={<ManageCategories />} />
         <Route path="/admin/orders"      element={<ManageOrders />} />
         <Route path="/admin/users"       element={<ManageUsers />} />
+        <Route path="/admin/reservations" element={<ManageReservations />} />
       </Route>
 
       {/* ── 404 ─────────────────────────────────────── */}

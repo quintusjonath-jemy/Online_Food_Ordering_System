@@ -50,7 +50,17 @@ switch ($_SERVER['REQUEST_METHOD']) {
             $userId,
             $cartData['items'],
             $cartData['total'],
-            ['address' => $body['address'], 'phone' => $body['phone'], 'notes' => $body['notes'] ?? '']
+            [
+                'address' => $body['address'], 
+                'phone' => $body['phone'], 
+                'notes' => $body['notes'] ?? '',
+                'coupon_code' => $body['coupon_code'] ?? null,
+                'discount_applied' => $body['discount_applied'] ?? 0.00,
+                'redeem_points' => $body['redeem_points'] ?? false,
+                'payment_method' => $body['payment_method'] ?? 'cod',
+                'payment_status' => $body['payment_status'] ?? 'unpaid',
+                'transaction_reference' => $body['transaction_reference'] ?? null
+            ]
         );
 
         // Clear cart on success

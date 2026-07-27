@@ -33,6 +33,11 @@ export default function CartItem({ item }) {
       />
       <div className="cart-item-details">
         <div className="cart-item-name">{item.name}</div>
+        {item.selected_addons && item.selected_addons.length > 0 && (
+          <div style={{ fontSize: '0.75rem', color: 'var(--clr-primary)', fontWeight: 600, margin: '2px 0 6px 0' }}>
+            + {item.selected_addons.map(x => x.name).join(', ')}
+          </div>
+        )}
         <div className="cart-item-price">${Number(item.price).toFixed(2)} each</div>
         <div className="qty-controls">
           <button className="qty-btn" onClick={() => handleQty(item.quantity - 1)} id={`qty-minus-${item.id}`}>

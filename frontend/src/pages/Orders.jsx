@@ -81,25 +81,49 @@ function OrderDetail({ orderId }) {
                 <img src={img} alt={item.food_name} style={{ width: 56, height: 56, borderRadius: '8px', objectFit: 'cover' }} onError={(e) => { e.target.src = FALLBACK; }} />
                 <div style={{ flex: 1 }}>
                   <div style={{ fontWeight: 700 }}>{item.food_name}</div>
+                  {item.selected_addons && item.selected_addons.length > 0 && (
+                    <div style={{ fontSize: '0.75rem', color: 'var(--clr-primary)', fontWeight: 600, margin: '2px 0' }}>
+                      + {item.selected_addons.map(x => x.name).join(', ')}
+                    </div>
+                  )}
                   <div style={{ fontSize: '0.875rem', color: 'var(--clr-text-muted)' }}>×{item.quantity} @ ${Number(item.price).toFixed(2)}</div>
                 </div>
                 <div style={{ fontWeight: 800, color: 'var(--clr-primary)' }}>${(item.quantity * item.price).toFixed(2)}</div>
               </div>
             );
           })}
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontWeight: 800, fontSize: '1.1rem' }}>
-            <span>Total</span>
+          
+          {Number(order.discount_applied) > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontSize: '0.9rem', color: 'var(--clr-success)', fontWeight: 600 }}>
+              <span>Total Discount</span>
+              <span>-${Number(order.discount_applied).toFixed(2)}</span>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.75rem', fontWeight: 800, fontSize: '1.1rem' }}>
+            <span>Final Paid Total</span>
             <span style={{ color: 'var(--clr-primary)' }}>${Number(order.total_price).toFixed(2)}</span>
           </div>
         </div>
 
         {/* Delivery info */}
         <div className="card" style={{ padding: '1.5rem' }}>
-          <h3 style={{ fontWeight: 700, marginBottom: '1rem' }}>Delivery Info</h3>
+          <h3 style={{ fontWeight: 700, marginBottom: '1rem' }}>Delivery & Payment Info</h3>
           {[
             { Icon: MapPin, label: 'Address', value: order.delivery_address },
             { Icon: Phone,  label: 'Phone',   value: order.phone },
             { Icon: FileText, label: 'Notes', value: order.notes || '—' },
+            { 
+              Icon: Clock, 
+              label: 'Payment Details', 
+              value: (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.85rem' }}>
+                  <span>Method: <strong style={{ textTransform: 'uppercase' }}>{order.payment_method}</strong></span>
+                  <span>Status: <span className={`badge badge-${order.payment_status}`} style={{ display: 'inline-block', padding: '1px 6px', fontSize: '0.65rem' }}>{order.payment_status}</span></span>
+                  {order.transaction_reference && <span style={{ fontSize: '0.7rem', color: 'var(--clr-text-muted)' }}>Ref: {order.transaction_reference}</span>}
+                </div>
+              ) 
+            },
           ].map(({ Icon, label, value }) => (
             <div key={label} style={{ display: 'flex', gap: '0.75rem', marginBottom: '1rem' }}>
               <Icon size={18} color="var(--clr-primary)" style={{ flexShrink: 0, marginTop: '2px' }} />

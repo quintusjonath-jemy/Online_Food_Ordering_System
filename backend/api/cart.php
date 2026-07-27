@@ -23,7 +23,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case 'POST':
         if (empty($body['food_id'])) sendResponse(['success' => false, 'message' => 'Food ID is required.'], 422);
         $quantity = max(1, (int) ($body['quantity'] ?? 1));
-        $result   = $cart->addItem($userId, (int) $body['food_id'], $quantity);
+        $selectedAddons = isset($body['selected_addons']) && is_array($body['selected_addons']) ? $body['selected_addons'] : null;
+        $result   = $cart->addItem($userId, (int) $body['food_id'], $quantity, $selectedAddons);
         sendResponse($result, $result['success'] ? 200 : 400);
         break;
 

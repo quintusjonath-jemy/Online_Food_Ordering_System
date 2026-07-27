@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { UtensilsCrossed, Users, ShoppingBag, DollarSign, TrendingUp, Clock, Menu } from 'lucide-react';
+import { UtensilsCrossed, Users, ShoppingBag, DollarSign, TrendingUp, Clock, Menu, Calendar } from 'lucide-react';
 import { statsAPI } from '../../services/api';
 import Sidebar from '../../components/Sidebar';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -13,6 +13,7 @@ const DASH_CARDS = (stats) => [
   { label: 'Total Foods',     value: stats.total_foods,     icon: <UtensilsCrossed size={24} />, color: '#FEF3C7', iconColor: '#92400E' },
   { label: 'Total Customers', value: stats.total_customers, icon: <Users size={24} />,           color: '#DBEAFE', iconColor: '#1E40AF' },
   { label: 'Orders Today',    value: stats.orders_today,    icon: <ShoppingBag size={24} />,     color: '#DCFCE7', iconColor: '#166534' },
+  { label: 'Bookings Today',  value: stats.reservations_today ?? 0, icon: <Calendar size={24} />, color: '#F3E8FF', iconColor: '#6B21A8' },
   { label: 'Total Revenue',   value: `$${Number(stats.total_revenue ?? 0).toFixed(2)}`, icon: <DollarSign size={24} />, color: '#FEE2E2', iconColor: '#991B1B' },
 ];
 
