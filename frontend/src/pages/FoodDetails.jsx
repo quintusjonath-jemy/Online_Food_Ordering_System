@@ -21,6 +21,7 @@ export default function FoodDetails() {
   const [loading,  setLoading]  = useState(true);
   const [adding,   setAdding]   = useState(false);
   const [fav,      setFav]      = useState(false);
+  const [selectedAddons, setSelectedAddons] = useState([]);
 
   useEffect(() => {
     foodsAPI.getById(id)
@@ -29,10 +30,37 @@ export default function FoodDetails() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const handleAddonToggle = (group, item, isRadio) => {
+    setSelectedAddons(prev => {
+      if (isRadio) {
+        const filtered = prev.filter(x => x.group_id !== group.id);
+        return [...filtered, { id: item.id, name: item.name, price: Number(item.price), group_id: group.id }];
+      } else {
+        const exists = prev.some(x => x.id === item.id);
+        if (exists) {
+          return prev.filter(x => x.id !== item.id);
+        } else {
+          return [...prev, { id: item.id, name: item.name, price: Number(item.price), group_id: group.id }];
+        }
+      }
+    });
+  };
+
   const handleAdd = async () => {
     if (!isAuthenticated) { toast.info('Please login first.'); return; }
+    
+    // Validate required groups
+    const requiredGroups = food?.addons?.filter(g => g.is_required == 1) ?? [];
+    for (const group of requiredGroups) {
+      const selectedForGroup = selectedAddons.some(x => x.group_id === group.id);
+      if (!selectedForGroup) {
+        toast.error(`Please make a selection for: ${group.name}`);
+        return;
+      }
+    }
+
     setAdding(true);
-    const ok = await addToCart(food.id, qty);
+    const ok = await addToCart(food.id, qty, selectedAddons);
     toast[ok ? 'success' : 'error'](ok ? `${qty}× ${food.name} added to cart!` : 'Failed to add item.');
     setAdding(false);
   };
@@ -97,9 +125,67 @@ export default function FoodDetails() {
               </span>
             </div>
 
+            {/* Addons Selection */}
+            {food.addons && food.addons.length > 0 && (
+              <div style={{ marginBottom: '2rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--clr-text)', borderBottom: '1px solid var(--clr-border)', paddingBottom: '0.4rem' }}>
+                  Customize Your Meal
+                </h3>
+                {food.addons.map((group) => {
+                  const isRadio = group.max_selection === 1;
+                  return (
+                    <div key={group.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>{group.name}</span>
+                        {group.is_required == 1 && (
+                          <span style={{ background: 'var(--clr-primary)', color: 'white', fontSize: '0.65rem', padding: '1px 6px', borderRadius: '4px', fontWeight: 700 }}>REQUIRED</span>
+                        )}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                        {group.items.map((item) => {
+                          const isSelected = selectedAddons.some(x => x.id === item.id);
+                          return (
+                            <label
+                              key={item.id}
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '0.5rem',
+                                fontSize: '0.85rem',
+                                color: 'var(--clr-text)',
+                                cursor: 'pointer',
+                                padding: '0.4rem 0.6rem',
+                                background: isSelected ? 'rgba(139,0,0,0.03)' : 'transparent',
+                                borderRadius: 'var(--radius-sm)',
+                                border: '1px solid',
+                                borderColor: isSelected ? 'var(--clr-primary)' : 'transparent',
+                                transition: 'all 0.15s ease'
+                              }}
+                            >
+                              <input
+                                type={isRadio ? 'radio' : 'checkbox'}
+                                name={`addon-group-${group.id}`}
+                                checked={isSelected}
+                                onChange={() => handleAddonToggle(group, item, isRadio)}
+                                style={{ accentColor: 'var(--clr-primary)', cursor: 'pointer' }}
+                              />
+                              <span style={{ flex: 1 }}>{item.name}</span>
+                              {Number(item.price) > 0 && (
+                                <span style={{ fontWeight: 600, color: 'var(--clr-primary)' }}>+${Number(item.price).toFixed(2)}</span>
+                              )}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
             {/* Price */}
             <div style={{ fontSize: 'var(--fs-3xl)', fontWeight: 900, color: 'var(--clr-primary)', marginBottom: '2rem' }}>
-              ${Number(food.price).toFixed(2)}
+              ${(Number(food.price) + selectedAddons.reduce((sum, x) => sum + x.price, 0)).toFixed(2)}
             </div>
 
             {/* Quantity + Add */}
