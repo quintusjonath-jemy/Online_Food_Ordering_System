@@ -38,6 +38,7 @@ export default function Navbar() {
         <ul className="navbar-links">
           <li><NavLink to="/" end>Home</NavLink></li>
           <li><NavLink to="/menu">Menu</NavLink></li>
+          <li><NavLink to="/book-table">Book Table</NavLink></li>
           <li><a href="#about">About</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
@@ -145,7 +146,7 @@ export default function Navbar() {
           padding: '1rem', boxShadow: 'var(--shadow-lg)', zIndex: 999,
           animation: 'slideUp 0.2s ease',
         }}>
-          {[['/', 'Home'], ['/menu', 'Menu'], ['/cart', 'Cart'], ['/orders', 'My Orders'], ['/profile', 'Profile']].map(([to, label]) => (
+          {[['/', 'Home'], ['/menu', 'Menu'], ['/book-table', 'Book Table'], ['/cart', 'Cart'], ['/orders', 'My Orders'], ['/profile', 'Profile']].map(([to, label]) => (
             <NavLink
               key={to}
               to={to}
