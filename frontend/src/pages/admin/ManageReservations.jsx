@@ -145,6 +145,20 @@ export default function ManageReservations() {
                         <span><Phone size={10} style={{ display: 'inline', marginRight: 2 }} />{booking.guest_phone}</span>
                         <span><Mail size={10} style={{ display: 'inline', marginRight: 2 }} />{booking.guest_email}</span>
                       </div>
+                      {booking.ordered_foods && booking.ordered_foods.length > 0 && (
+                        <div style={{ marginTop: '0.5rem' }}>
+                          <span style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--clr-primary)', display: 'block', marginBottom: '2px' }}>
+                            Recent Orders:
+                          </span>
+                          <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+                            {booking.ordered_foods.map(f => (
+                              <span key={f} style={{ background: 'var(--clr-bg)', color: 'var(--clr-text)', fontSize: '0.65rem', padding: '1px 5px', borderRadius: '4px', border: '1px solid var(--clr-border)' }}>
+                                {f}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
                     </td>
                     <td>
                       <div style={{ fontWeight: 500, fontSize: '0.875rem' }}>{booking.reservation_date}</div>
