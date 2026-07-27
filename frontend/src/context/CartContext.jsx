@@ -29,11 +29,11 @@ export function CartProvider({ children }) {
   // Reload cart when auth state changes
   useEffect(() => { fetchCart(); }, [fetchCart]);
 
-  /** Add item to cart */
-  const addToCart = async (foodId, quantity = 1) => {
+  /** Add item to cart with custom addons */
+  const addToCart = async (foodId, quantity = 1, selectedAddons = null) => {
     if (!isAuthenticated) return false;
     try {
-      const { data } = await cartAPI.addItem({ food_id: foodId, quantity });
+      const { data } = await cartAPI.addItem({ food_id: foodId, quantity, selected_addons: selectedAddons });
       if (data.success) await fetchCart();
       return data.success;
     } catch { return false; }
