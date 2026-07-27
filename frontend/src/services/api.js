@@ -94,4 +94,18 @@ export const uploadAPI = {
     }),
 };
 
+// ── Reservations ─────────────────────────────────────────────────────────────
+export const reservationsAPI = {
+  getAll:       (params) => api.get('/reservations.php', { params }),
+  getMyBookings:()       => api.get('/reservations.php'),
+  getById:      (id)     => api.get(`/reservations.php?id=${id}`),
+  create:       (data)   => api.post('/reservations.php', data),
+  updateStatus: (id, status) => api.put(`/reservations.php?id=${id}`, { status }),
+};
+
+// ── Coupons ──────────────────────────────────────────────────────────────────
+export const couponsAPI = {
+  validate: (code, subtotal) => api.post('/coupons.php', { code, subtotal }),
+};
+
 export default api;
