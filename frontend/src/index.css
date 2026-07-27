@@ -606,8 +606,8 @@ input, textarea, select { font-family: var(--font-family); }
   gap: var(--sp-3);
   animation: floatCard 5s ease-in-out infinite;
 }
-.hero-floating-card.card-1 { bottom: 10%; left: -5%; animation-delay: 0s; }
-.hero-floating-card.card-2 { top: 15%; right: -5%; animation-delay: 1.5s; }
+.hero-floating-card.card-1 { bottom: 10%; left: 0%; animation-delay: 0s; }
+.hero-floating-card.card-2 { top: 15%; right: 0%; animation-delay: 1.5s; }
 @keyframes floatCard {
   0%, 100% { transform: translateY(0) rotate(-1deg); }
   50%       { transform: translateY(-8px) rotate(1deg); }

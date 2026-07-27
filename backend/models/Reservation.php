@@ -139,7 +139,7 @@ class Reservation {
     }
 
     /**
-     * Get all reservations for admin
+     * Get all reservations for admin with attached user ordered foods
      */
     public function getAll(array $params = []): array {
         $sql = "SELECT r.*, t.table_number, u.name AS user_name 
@@ -167,7 +167,30 @@ class Reservation {
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($values);
-        return $stmt->fetchAll();
+        $results = $stmt->fetchAll();
+
+        foreach ($results as &$row) {
+            $row['ordered_foods'] = $row['user_id'] ? $this->getUserOrderedFoods((int)$row['user_id']) : [];
+        }
+
+        return $results;
+    }
+
+    /**
+     * Get recent distinct food item names ordered by a user
+     */
+    public function getUserOrderedFoods(int $userId): array {
+        $stmt = $this->db->prepare(
+            "SELECT DISTINCT f.name 
+             FROM orders o 
+             JOIN order_items oi ON o.id = oi.order_id 
+             JOIN foods f ON oi.food_id = f.id 
+             WHERE o.user_id = ? 
+             ORDER BY o.order_date DESC 
+             LIMIT 4"
+        );
+        $stmt->execute([$userId]);
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
     }
 
     /**

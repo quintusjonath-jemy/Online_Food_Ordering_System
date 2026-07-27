@@ -98,28 +98,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Features ─────────────────────────────────────────────────── */}
-      <section className="section-sm" style={{ background: 'var(--clr-white)' }}>
+      {/* ── Featured Foods ───────────────────────────────────────────── */}
+      <section className="section" style={{ background: 'var(--clr-bg-alt)' }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--sp-6)' }}>
-            {[
-              { icon: <Zap size={24} />, title: 'Lightning Fast',  desc: '30-minute delivery guaranteed or your next order is free.' },
-              { icon: <Award size={24} />, title: 'Premium Quality', desc: 'Michelin-starred chefs craft every dish with finest ingredients.' },
-              { icon: <Clock size={24} />, title: 'Order Anytime',   desc: 'Available 7 days a week, from 8am to midnight.' },
-            ].map(({ icon, title, desc }) => (
-              <div key={title} style={{ textAlign: 'center', padding: 'var(--sp-6)' }}>
-                <div style={{
-                  width: 60, height: 60, background: 'rgba(139,0,0,0.08)', borderRadius: 'var(--radius-lg)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'var(--clr-primary)', margin: '0 auto var(--sp-4)',
-                }}>
-                  {icon}
-                </div>
-                <h3 style={{ fontWeight: 700, marginBottom: 'var(--sp-2)' }}>{title}</h3>
-                <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text-muted)' }}>{desc}</p>
-              </div>
-            ))}
+          <div className="section-heading">
+            <span className="eyebrow">Chef's Selection</span>
+            <h2>Featured <span>Dishes</span></h2>
+            <p>Handpicked by our master chefs — the absolute best we have to offer.</p>
+            <div className="divider" />
           </div>
+          {loading ? <LoadingSpinner /> : (
+            <>
+              <div className="grid-4">
+                {featured.map((food) => <FoodCard key={food.id} food={food} />)}
+              </div>
+              <div style={{ textAlign: 'center', marginTop: 'var(--sp-10)' }}>
+                <Link to="/menu" className="btn btn-outline btn-lg">
+                  View Full Menu <ChevronRight size={18} />
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -167,27 +166,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── Featured Foods ───────────────────────────────────────────── */}
-      <section className="section" style={{ background: 'var(--clr-bg-alt)' }}>
+      {/* ── Features ─────────────────────────────────────────────────── */}
+      <section className="section-sm" style={{ background: 'var(--clr-white)' }}>
         <div className="container">
-          <div className="section-heading">
-            <span className="eyebrow">Chef's Selection</span>
-            <h2>Featured <span>Dishes</span></h2>
-            <p>Handpicked by our master chefs — the absolute best we have to offer.</p>
-            <div className="divider" />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--sp-6)' }}>
+            {[
+              { icon: <Zap size={24} />, title: 'Lightning Fast',  desc: '30-minute delivery guaranteed or your next order is free.' },
+              { icon: <Award size={24} />, title: 'Premium Quality', desc: 'Michelin-starred chefs craft every dish with finest ingredients.' },
+              { icon: <Clock size={24} />, title: 'Order Anytime',   desc: 'Available 7 days a week, from 8am to midnight.' },
+            ].map(({ icon, title, desc }) => (
+              <div key={title} style={{ textAlign: 'center', padding: 'var(--sp-6)' }}>
+                <div style={{
+                  width: 60, height: 60, background: 'rgba(139,0,0,0.08)', borderRadius: 'var(--radius-lg)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  color: 'var(--clr-primary)', margin: '0 auto var(--sp-4)',
+                }}>
+                  {icon}
+                </div>
+                <h3 style={{ fontWeight: 700, marginBottom: 'var(--sp-2)' }}>{title}</h3>
+                <p style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text-muted)' }}>{desc}</p>
+              </div>
+            ))}
           </div>
-          {loading ? <LoadingSpinner /> : (
-            <>
-              <div className="grid-4">
-                {featured.map((food) => <FoodCard key={food.id} food={food} />)}
-              </div>
-              <div style={{ textAlign: 'center', marginTop: 'var(--sp-10)' }}>
-                <Link to="/menu" className="btn btn-outline btn-lg">
-                  View Full Menu <ChevronRight size={18} />
-                </Link>
-              </div>
-            </>
-          )}
         </div>
       </section>
 
