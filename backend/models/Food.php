@@ -60,7 +60,37 @@ class Food {
             "SELECT f.*, c.name AS category_name FROM {$this->table} f LEFT JOIN categories c ON f.category_id = c.id WHERE f.id = ?"
         );
         $stmt->execute([$id]);
-        return $stmt->fetch() ?: null;
+        $food = $stmt->fetch();
+        if (!$food) return null;
+
+        // Fetch custom addons/options
+        $food['addons'] = $this->getAddons($id);
+        return $food;
+    }
+
+    /**
+     * Get customizable addon groups and items for a food ID
+     */
+    public function getAddons(int $foodId): array {
+        // Fetch groups
+        $stmt = $this->db->prepare(
+            "SELECT g.* FROM addon_groups g 
+             JOIN food_addons fa ON g.id = fa.addon_group_id 
+             WHERE fa.food_id = ?"
+        );
+        $stmt->execute([$foodId]);
+        $groups = $stmt->fetchAll();
+
+        // Fetch items per group
+        foreach ($groups as &$group) {
+            $stmtItems = $this->db->prepare(
+                "SELECT id, name, price FROM addon_items WHERE addon_group_id = ?"
+            );
+            $stmtItems->execute([$group['id']]);
+            $group['items'] = $stmtItems->fetchAll();
+        }
+
+        return $groups;
     }
 
     /**

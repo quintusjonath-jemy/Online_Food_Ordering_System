@@ -24,30 +24,75 @@ class Order {
 
         $this->db->beginTransaction();
         try {
+            // Calculate final price with coupons and points
+            $couponCode = $delivery['coupon_code'] ?? null;
+            $discountApplied = (float)($delivery['discount_applied'] ?? 0.00);
+            $redeemPoints = (bool)($delivery['redeem_points'] ?? false);
+            $pointsDeducted = 0;
+
+            // Fetch user's current loyalty points
+            $stmtUser = $this->db->prepare("SELECT loyalty_points FROM users WHERE id = ?");
+            $stmtUser->execute([$userId]);
+            $currentPoints = (int)$stmtUser->fetchColumn();
+
+            if ($redeemPoints && $currentPoints > 0) {
+                // $1 per 10 points
+                $pointsDiscount = min($currentPoints / 10.0, $totalPrice - $discountApplied);
+                $pointsDeducted = (int)($pointsDiscount * 10);
+                $discountApplied += $pointsDiscount;
+            }
+
+            $finalPrice = max(0.00, $totalPrice - $discountApplied);
+
             // Insert order
             $stmt = $this->db->prepare(
-                "INSERT INTO {$this->table} (user_id, total_price, delivery_address, phone, notes)
-                 VALUES (?, ?, ?, ?, ?)"
+                "INSERT INTO {$this->table} 
+                 (user_id, total_price, delivery_address, phone, notes, payment_method, payment_status, transaction_reference, coupon_code, discount_applied)
+                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
             $stmt->execute([
                 $userId,
-                $totalPrice,
+                $finalPrice,
                 $delivery['address'],
                 $delivery['phone'],
                 $delivery['notes'] ?? '',
+                $delivery['payment_method'] ?? 'cod',
+                $delivery['payment_status'] ?? 'unpaid',
+                $delivery['transaction_reference'] ?? null,
+                $couponCode,
+                $discountApplied
             ]);
             $orderId = (int) $this->db->lastInsertId();
 
             // Insert each order item
             $itemStmt = $this->db->prepare(
-                "INSERT INTO {$this->itemsTable} (order_id, food_id, quantity, price) VALUES (?, ?, ?, ?)"
+                "INSERT INTO {$this->itemsTable} (order_id, food_id, quantity, price, selected_addons) VALUES (?, ?, ?, ?, ?)"
             );
             foreach ($cartItems as $item) {
-                $itemStmt->execute([$orderId, $item['food_id'], $item['quantity'], $item['price']]);
+                $itemStmt->execute([
+                    $orderId, 
+                    $item['food_id'], 
+                    $item['quantity'], 
+                    $item['price'], 
+                    json_encode($item['selected_addons'] ?? [])
+                ]);
             }
 
+            // Update user loyalty points: add 1 point per $10 spent
+            $pointsEarned = (int)($finalPrice / 10);
+            $pointsDiff = $pointsEarned - $pointsDeducted;
+
+            $stmtUpdatePoints = $this->db->prepare("UPDATE users SET loyalty_points = loyalty_points + ? WHERE id = ?");
+            $stmtUpdatePoints->execute([$pointsDiff, $userId]);
+
             $this->db->commit();
-            return ['success' => true, 'message' => 'Order placed successfully!', 'order_id' => $orderId];
+            return [
+                'success' => true, 
+                'message' => 'Order placed successfully!', 
+                'order_id' => $orderId,
+                'points_earned' => $pointsEarned,
+                'points_deducted' => $pointsDeducted
+            ];
         } catch (\Exception $e) {
             $this->db->rollBack();
             return ['success' => false, 'message' => 'Failed to place order: ' . $e->getMessage()];
@@ -116,7 +161,14 @@ class Order {
              WHERE oi.order_id = ?"
         );
         $stmt->execute([$id]);
-        $order['items'] = $stmt->fetchAll();
+        $items = $stmt->fetchAll();
+        
+        // Decode selected addons for each item
+        foreach ($items as &$item) {
+            $item['selected_addons'] = json_decode($item['selected_addons'], true) ?? [];
+        }
+        
+        $order['items'] = $items;
         return $order;
     }
 

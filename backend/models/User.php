@@ -59,7 +59,7 @@ class User {
      * Find user by ID (without password)
      */
     public function findById(int $id): ?array {
-        $stmt = $this->db->prepare("SELECT id, name, email, phone, address, role, created_at FROM {$this->table} WHERE id = ?");
+        $stmt = $this->db->prepare("SELECT id, name, email, phone, address, role, loyalty_points, created_at FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->fetch() ?: null;
     }
