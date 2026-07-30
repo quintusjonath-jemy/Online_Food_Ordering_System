@@ -47,7 +47,6 @@ SaveurEats is designed around a **Premium Restaurant** theme, utilizing soft mic
 
 ## 📐 Architecture & Workflow
 
-```mermaid
 graph TD
     subgraph Client [React Frontend SPA - Port 5173]
         A[App.jsx] --> B[AuthContext / CartContext]
