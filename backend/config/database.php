@@ -1,14 +1,54 @@
 <?php
 /**
+ * Load Environment Variables from .env file
+ */
+function loadBackendEnv(string $path): void {
+    if (!file_exists($path)) {
+        return;
+    }
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || str_starts_with($line, '#')) {
+            continue;
+        }
+        if (str_contains($line, '=')) {
+            [$name, $value] = explode('=', $line, 2);
+            $name  = trim($name);
+            $value = trim($value);
+            if ((str_starts_with($value, '"') && str_ends_with($value, '"')) ||
+                (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
+                $value = substr($value, 1, -1);
+            }
+            if (!getenv($name)) {
+                putenv("$name=$value");
+                $_ENV[$name]    = $value;
+                $_SERVER[$name] = $value;
+            }
+        }
+    }
+}
+
+// Load backend/.env
+loadBackendEnv(__DIR__ . '/../.env');
+
+/**
  * Database Configuration Class
  * Provides PDO database connection using OOP principles
  */
 class Database {
-    private string $host     = 'localhost';
-    private string $db_name  = 'food_ordering_db';
-    private string $username = 'root';
-    private string $password = '';
-    private ?PDO   $conn     = null;
+    private string $host;
+    private string $db_name;
+    private string $username;
+    private string $password;
+    private ?PDO   $conn = null;
+
+    public function __construct() {
+        $this->host     = getenv('DB_HOST') ?: ($_ENV['DB_HOST'] ?? 'localhost');
+        $this->db_name  = getenv('DB_NAME') ?: ($_ENV['DB_NAME'] ?? 'food_ordering_db');
+        $this->username = getenv('DB_USER') ?: ($_ENV['DB_USER'] ?? 'root');
+        $this->password = getenv('DB_PASS') ?: ($_ENV['DB_PASS'] ?? '');
+    }
 
     /**
      * Get database connection (singleton pattern)
@@ -16,7 +56,13 @@ class Database {
     public function getConnection(): PDO {
         if ($this->conn === null) {
             try {
-                $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset=utf8mb4";
+                if (str_contains($this->host, ':')) {
+                    [$hostName, $port] = explode(':', $this->host, 2);
+                    $dsn = "mysql:host={$hostName};port={$port};dbname={$this->db_name};charset=utf8mb4";
+                } else {
+                    $dsn = "mysql:host={$this->host};dbname={$this->db_name};charset=utf8mb4";
+                }
+
                 $this->conn = new PDO($dsn, $this->username, $this->password, [
                     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -107,8 +153,13 @@ function requireAdmin(): array {
 }
 
 // ── JWT Helpers ──────────────────────────────────────────────────────────────
-define('JWT_SECRET', 'food_ordering_secret_key_2024_very_secure');
-define('JWT_EXPIRY', 86400); // 24 hours
+$jwtSecret = getenv('JWT_SECRET') ?: ($_ENV['JWT_SECRET'] ?? 'food_ordering_secret_key_2024_very_secure');
+if (!defined('JWT_SECRET')) {
+    define('JWT_SECRET', $jwtSecret);
+}
+if (!defined('JWT_EXPIRY')) {
+    define('JWT_EXPIRY', 86400); // 24 hours
+}
 
 function base64UrlEncode(string $data): string {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
