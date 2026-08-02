@@ -48,5 +48,5 @@ sendResponse([
     'success'  => true,
     'message'  => 'Image uploaded successfully.',
     'filename' => $filename,
-    'url'      => 'http://localhost:8000/backend/uploads/' . $filename,
+    'url'      => (getenv('UPLOAD_BASE_URL') ?: ($_ENV['UPLOAD_BASE_URL'] ?? 'http://localhost/uploads/')) . $filename,
 ]);
