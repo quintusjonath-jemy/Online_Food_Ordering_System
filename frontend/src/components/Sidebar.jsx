@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, UtensilsCrossed, Tag, ShoppingBag,
-  Users, BarChart2, LogOut, X, Calendar,
+  Users, BarChart2, LogOut, X, Calendar, Ticket
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: '/admin/categories', icon: Tag,             label: 'Categories' },
   { to: '/admin/orders',     icon: ShoppingBag,     label: 'Orders' },
   { to: '/admin/reservations', icon: Calendar,        label: 'Reservations' },
+  { to: '/admin/coupons',      icon: Ticket,          label: 'Coupons' },
   { to: '/admin/users',      icon: Users,           label: 'Customers' },
 ];
 
