@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', '0');
+error_reporting(E_ALL);
+
 /**
  * Load Environment Variables from .env file
  */
@@ -69,6 +72,7 @@ class Database {
                     PDO::ATTR_EMULATE_PREPARES   => false,
                 ]);
             } catch (PDOException $e) {
+                setCorsHeaders();
                 http_response_code(500);
                 echo json_encode(['success' => false, 'message' => 'Database connection failed: ' . $e->getMessage()]);
                 exit;
@@ -82,18 +86,19 @@ class Database {
  * Set CORS and JSON response headers
  */
 function setCorsHeaders(): void {
-    $allowedOrigins = ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000', 'http://localhost:3001'];
     $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-    if (in_array($origin, $allowedOrigins, true)) {
+    if (!empty($origin)) {
         header("Access-Control-Allow-Origin: $origin");
+        header('Access-Control-Allow-Credentials: true');
+    } else {
+        header("Access-Control-Allow-Origin: *");
     }
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
-    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Accept, Origin');
     header('Access-Control-Max-Age: 3600');
     header('Content-Type: application/json; charset=utf-8');
 
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
         http_response_code(200);
         exit;
     }

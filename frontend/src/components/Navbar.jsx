@@ -39,8 +39,6 @@ export default function Navbar() {
           <li><NavLink to="/" end>Home</NavLink></li>
           <li><NavLink to="/menu">Menu</NavLink></li>
           <li><NavLink to="/book-table">Book Table</NavLink></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#contact">Contact</a></li>
         </ul>
 
         {/* Actions */}
