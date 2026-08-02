@@ -41,7 +41,7 @@ export default function OrderCard({ order }) {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-4)' }}>
           <span style={{ fontWeight: 800, fontSize: 'var(--fs-lg)', color: 'var(--clr-primary)' }}>
-            ${Number(order.total_price).toFixed(2)}
+            Rs. {Number(order.total_price).toFixed(2)}
           </span>
           <Link
             to={`/orders/${order.id}`}

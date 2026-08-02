@@ -38,7 +38,7 @@ export default function CartItem({ item }) {
             + {item.selected_addons.map(x => x.name).join(', ')}
           </div>
         )}
-        <div className="cart-item-price">${Number(item.price).toFixed(2)} each</div>
+        <div className="cart-item-price">Rs. {Number(item.price).toFixed(2)} each</div>
         <div className="qty-controls">
           <button className="qty-btn" onClick={() => handleQty(item.quantity - 1)} id={`qty-minus-${item.id}`}>
             <Minus size={12} />
@@ -58,7 +58,7 @@ export default function CartItem({ item }) {
         </div>
       </div>
       <div className="cart-item-subtotal">
-        ${Number(item.subtotal).toFixed(2)}
+        Rs. {Number(item.subtotal).toFixed(2)}
       </div>
     </div>
   );
