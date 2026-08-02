@@ -86,9 +86,9 @@ function OrderDetail({ orderId }) {
                       + {item.selected_addons.map(x => x.name).join(', ')}
                     </div>
                   )}
-                  <div style={{ fontSize: '0.875rem', color: 'var(--clr-text-muted)' }}>×{item.quantity} @ ${Number(item.price).toFixed(2)}</div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--clr-text-muted)' }}>×{item.quantity} @ Rs. {Number(item.price).toFixed(2)}</div>
                 </div>
-                <div style={{ fontWeight: 800, color: 'var(--clr-primary)' }}>${(item.quantity * item.price).toFixed(2)}</div>
+                <div style={{ fontWeight: 800, color: 'var(--clr-primary)' }}>Rs. {(item.quantity * item.price).toFixed(2)}</div>
               </div>
             );
           })}
@@ -96,13 +96,13 @@ function OrderDetail({ orderId }) {
           {Number(order.discount_applied) > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontSize: '0.9rem', color: 'var(--clr-success)', fontWeight: 600 }}>
               <span>Total Discount</span>
-              <span>-${Number(order.discount_applied).toFixed(2)}</span>
+              <span>-Rs. {Number(order.discount_applied).toFixed(2)}</span>
             </div>
           )}
 
           <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.75rem', fontWeight: 800, fontSize: '1.1rem' }}>
             <span>Final Paid Total</span>
-            <span style={{ color: 'var(--clr-primary)' }}>${Number(order.total_price).toFixed(2)}</span>
+            <span style={{ color: 'var(--clr-primary)' }}>Rs. {Number(order.total_price).toFixed(2)}</span>
           </div>
         </div>
 

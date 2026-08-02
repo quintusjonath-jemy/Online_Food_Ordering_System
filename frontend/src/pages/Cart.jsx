@@ -55,19 +55,19 @@ export default function Cart() {
               <h3>Order Summary</h3>
               <div className="summary-row">
                 <span>Subtotal ({count} items)</span>
-                <span>${Number(total).toFixed(2)}</span>
+                <span>Rs. {Number(total).toFixed(2)}</span>
               </div>
               <div className="summary-row">
                 <span>Delivery Fee</span>
-                <span>${delivery.toFixed(2)}</span>
+                <span>Rs. {delivery.toFixed(2)}</span>
               </div>
               <div className="summary-row">
                 <span>Tax (8%)</span>
-                <span>${tax.toFixed(2)}</span>
+                <span>Rs. {tax.toFixed(2)}</span>
               </div>
               <div className="summary-row summary-total">
                 <span>Total</span>
-                <span>${grandTotal.toFixed(2)}</span>
+                <span>Rs. {grandTotal.toFixed(2)}</span>
               </div>
               <Link
                 to="/checkout"
