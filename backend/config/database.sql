@@ -270,7 +270,7 @@ INSERT INTO coupons (code, discount_type, discount_value, min_order_value, expir
 -- Seed addon groups
 INSERT INTO addon_groups (name, is_required, min_selection, max_selection) VALUES
 ('Extra Toppings', 0, 0, 5),
-('Choose Drink', 0, 0, 1),
+('Choose Drink', 0, 0, 5),
 ('Steak Doneness', 1, 1, 1);
 
 -- Seed addon items
