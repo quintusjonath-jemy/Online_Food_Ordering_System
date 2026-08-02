@@ -194,7 +194,7 @@ class Order {
         
         // Decode selected addons for each item
         foreach ($items as &$item) {
-            $item['selected_addons'] = json_decode($item['selected_addons'], true) ?? [];
+            $item['selected_addons'] = !empty($item['selected_addons']) ? (json_decode($item['selected_addons'], true) ?? []) : [];
         }
         
         $order['items'] = $items;

@@ -48,5 +48,5 @@ sendResponse([
     'success'  => true,
     'message'  => 'Image uploaded successfully.',
     'filename' => $filename,
-    'url'      => 'http://localhost/uploads/' . $filename,
+    'url'      => 'http://localhost:8000/backend/uploads/' . $filename,
 ]);

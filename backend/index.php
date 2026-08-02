@@ -1,4 +1,14 @@
 <?php
+// If running PHP dev server in backend/ root and request URI starts with /backend/, route to target file
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH);
+if (is_string($uri) && str_starts_with($uri, '/backend/')) {
+    $targetFile = __DIR__ . substr($uri, 8);
+    if (file_exists($targetFile) && is_file($targetFile)) {
+        require $targetFile;
+        exit;
+    }
+}
+
 require_once __DIR__ . '/config/database.php';
 
 // Try to check database status

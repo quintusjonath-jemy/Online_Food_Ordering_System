@@ -31,7 +31,7 @@ class Cart {
         $total = 0;
 
         foreach ($rows as $row) {
-            $addons = json_decode($row['selected_addons'], true) ?? [];
+            $addons = !empty($row['selected_addons']) ? (json_decode($row['selected_addons'], true) ?? []) : [];
             
             // Calculate total price of all selected addons
             $addonsPrice = 0;

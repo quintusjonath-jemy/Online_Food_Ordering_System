@@ -6,7 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 
-const IMAGE_BASE = import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost/uploads/';
+import { IMAGE_BASE_URL as IMAGE_BASE } from '../config';
 const FALLBACK   = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=80&q=60';
 
 export default function Checkout() {

@@ -77,6 +77,8 @@ function AppRoutes() {
           <Route path="/checkout"    element={<Checkout />} />
           <Route path="/orders"      element={<Orders />} />
           <Route path="/orders/:id"  element={<Orders />} />
+          <Route path="/order"       element={<Orders />} />
+          <Route path="/order/:id"   element={<Orders />} />
           <Route path="/profile"     element={<Profile />} />
           <Route path="/book-table"  element={<BookTable />} />
         </Route>
