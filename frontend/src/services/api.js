@@ -106,6 +106,9 @@ export const reservationsAPI = {
 // ── Coupons ──────────────────────────────────────────────────────────────────
 export const couponsAPI = {
   validate: (code, subtotal) => api.post('/coupons.php', { code, subtotal }),
+  getAll:   ()                => api.get('/coupons.php'),
+  create:   (data)            => api.post('/coupons.php?action=create', data),
+  delete:   (id)              => api.delete(`/coupons.php?id=${id}`),
 };
 
 export default api;
