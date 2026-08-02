@@ -1,14 +1,30 @@
 <?php
-/**
- * Database Configuration Class
- * Provides PDO database connection using OOP principles
- */
+function loadEnv(string $path): void {
+    if (!file_exists($path)) return;
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        $line = trim($line);
+        if ($line === '' || strpos($line, '#') === 0) continue;
+        if (strpos($line, '=') === false) continue;
+        list($name, $value) = explode('=', $line, 2);
+        $_ENV[trim($name)] = trim($value);
+    }
+}
+loadEnv(__DIR__ . '/../.env');
+
 class Database {
-    private string $host     = 'localhost';
-    private string $db_name  = 'food_ordering_db';
-    private string $username = 'root';
-    private string $password = '';
+    private string $host;
+    private string $db_name;
+    private string $username;
+    private string $password;
     private ?PDO   $conn     = null;
+
+    public function __construct() {
+        $this->host     = $_ENV['DB_HOST'] ?? 'localhost';
+        $this->db_name  = $_ENV['DB_NAME'] ?? 'food_ordering_db';
+        $this->username = $_ENV['DB_USER'] ?? 'root';
+        $this->password = $_ENV['DB_PASS'] ?? '';
+    }
 
     /**
      * Get database connection (singleton pattern)
@@ -107,7 +123,7 @@ function requireAdmin(): array {
 }
 
 // ── JWT Helpers ──────────────────────────────────────────────────────────────
-define('JWT_SECRET', 'food_ordering_secret_key_2024_very_secure');
+define('JWT_SECRET', $_ENV['JWT_SECRET'] ?? 'food_ordering_secret_key_2024_very_secure');
 define('JWT_EXPIRY', 86400); // 24 hours
 
 function base64UrlEncode(string $data): string {
