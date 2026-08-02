@@ -1,9 +1,0 @@
-Options -Indexes
-
-# Allow requests from React dev server (both ports in case 5173 is in use)
-SetEnvIf Origin "^http://localhost:(5173|5174|3000|3001)$" CORS_ORIGIN=$0
-Header set Access-Control-Allow-Origin "%{CORS_ORIGIN}e" env=CORS_ORIGIN
-Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
-Header set Access-Control-Allow-Credentials "true"
-Header set Access-Control-Max-Age "3600"
