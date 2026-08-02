@@ -22,6 +22,7 @@ import ManageCategories  from './pages/admin/ManageCategories';
 import ManageOrders      from './pages/admin/ManageOrders';
 import ManageUsers       from './pages/admin/ManageUsers';
 import ManageReservations from './pages/admin/ManageReservations';
+import ManageCoupons      from './pages/admin/ManageCoupons';
 
 // Customer pages
 import BookTable from './pages/BookTable';
@@ -91,6 +92,7 @@ function AppRoutes() {
         <Route path="/admin/orders"      element={<ManageOrders />} />
         <Route path="/admin/users"       element={<ManageUsers />} />
         <Route path="/admin/reservations" element={<ManageReservations />} />
+        <Route path="/admin/coupons"      element={<ManageCoupons />} />
       </Route>
 
       {/* ── 404 ─────────────────────────────────────── */}

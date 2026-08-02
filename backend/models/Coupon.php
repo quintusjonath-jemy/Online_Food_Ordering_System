@@ -78,4 +78,54 @@ class Coupon {
             return min((float)$coupon['discount_value'], $subtotal);
         }
     }
+
+    /**
+     * Get all coupons (admin)
+     */
+    public function getAll(): array {
+        $stmt = $this->db->prepare("SELECT * FROM {$this->table} ORDER BY id DESC");
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    /**
+     * Create a new coupon (admin)
+     */
+    public function create(array $data): array {
+        $code = strtoupper(trim($data['code'] ?? ''));
+        if (empty($code)) {
+            return ['success' => false, 'message' => 'Coupon code is required.'];
+        }
+
+        // Check duplicates
+        $stmt = $this->db->prepare("SELECT id FROM {$this->table} WHERE code = ?");
+        $stmt->execute([$code]);
+        if ($stmt->fetch()) {
+            return ['success' => false, 'message' => 'A coupon with this code already exists.'];
+        }
+
+        $stmt = $this->db->prepare(
+            "INSERT INTO {$this->table} (code, discount_type, discount_value, min_order_value, expiry_date, active)
+             VALUES (?, ?, ?, ?, ?, ?)"
+        );
+        $stmt->execute([
+            $code,
+            $data['discount_type'] ?? 'fixed',
+            (float)($data['discount_value'] ?? 0),
+            (float)($data['min_order_value'] ?? 0),
+            $data['expiry_date'] ?? date('Y-m-d', strtotime('+30 days')),
+            isset($data['active']) ? (int)$data['active'] : 1
+        ]);
+
+        return ['success' => true, 'message' => 'Coupon created successfully!'];
+    }
+
+    /**
+     * Delete a coupon (admin)
+     */
+    public function delete(int $id): array {
+        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
+        $stmt->execute([$id]);
+        return ['success' => true, 'message' => 'Coupon deleted successfully!'];
+    }
 }

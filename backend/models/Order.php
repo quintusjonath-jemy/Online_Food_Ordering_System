@@ -85,6 +85,28 @@ class Order {
             $stmtUpdatePoints = $this->db->prepare("UPDATE users SET loyalty_points = loyalty_points + ? WHERE id = ?");
             $stmtUpdatePoints->execute([$pointsDiff, $userId]);
 
+            // Save user profile address & phone if empty
+            $stmtUserCheck = $this->db->prepare("SELECT phone, address FROM users WHERE id = ?");
+            $stmtUserCheck->execute([$userId]);
+            $userProfile = $stmtUserCheck->fetch();
+            if ($userProfile) {
+                $updateFields = [];
+                $updateParams = [];
+                if (empty($userProfile['phone']) && !empty($delivery['phone'])) {
+                    $updateFields[] = "phone = ?";
+                    $updateParams[] = $delivery['phone'];
+                }
+                if (empty($userProfile['address']) && !empty($delivery['address'])) {
+                    $updateFields[] = "address = ?";
+                    $updateParams[] = $delivery['address'];
+                }
+                if (!empty($updateFields)) {
+                    $updateParams[] = $userId;
+                    $stmtProfileUpdate = $this->db->prepare("UPDATE users SET " . implode(', ', $updateFields) . " WHERE id = ?");
+                    $stmtProfileUpdate->execute($updateParams);
+                }
+            }
+
             $this->db->commit();
             return [
                 'success' => true, 
