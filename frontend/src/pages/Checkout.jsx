@@ -365,7 +365,7 @@ export default function Checkout() {
                        )}
                        <div style={{ color: 'var(--clr-text-muted)' }}>×{item.quantity}</div>
                      </div>
-                     <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>${Number(item.subtotal).toFixed(2)}</div>
+                     <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>Rs. {Number(item.subtotal).toFixed(2)}</div>
                    </div>
                  );
                })}
@@ -419,27 +419,27 @@ export default function Checkout() {
                    style={{ accentColor: 'var(--clr-primary)', cursor: 'pointer', width: 16, height: 16 }}
                  />
                  <label htmlFor="redeem-points-cb" style={{ fontSize: '0.8rem', cursor: 'pointer', fontWeight: 500 }}>
-                   Redeem <strong>{userPoints} Loyalty Points</strong> (Save ${Math.min(maxPointsDiscount, total - couponDiscount).toFixed(2)})
+                   Redeem <strong>{userPoints} Loyalty Points</strong> (Save Rs. {Math.min(maxPointsDiscount, total - couponDiscount).toFixed(2)})
                  </label>
                </div>
              )}
 
-             <div className="summary-row"><span>Subtotal</span><span>${Number(total).toFixed(2)}</span></div>
+             <div className="summary-row"><span>Subtotal</span><span>Rs. {Number(total).toFixed(2)}</span></div>
              {couponDiscount > 0 && (
                <div className="summary-row" style={{ color: 'var(--clr-success)', fontWeight: 600 }}>
                  <span>Coupon Discount</span>
-                 <span>-${couponDiscount.toFixed(2)}</span>
+                 <span>-Rs. {couponDiscount.toFixed(2)}</span>
                </div>
              )}
              {pointsDiscount > 0 && (
                <div className="summary-row" style={{ color: 'var(--clr-success)', fontWeight: 600 }}>
                  <span>Loyalty Discount</span>
-                 <span>-${pointsDiscount.toFixed(2)}</span>
+                 <span>-Rs. {pointsDiscount.toFixed(2)}</span>
                </div>
              )}
-             <div className="summary-row"><span>Delivery</span><span>${delivery.toFixed(2)}</span></div>
-             <div className="summary-row"><span>Tax (8%)</span><span>${tax.toFixed(2)}</span></div>
-             <div className="summary-row summary-total"><span>Grand Total</span><span>${grandTotal.toFixed(2)}</span></div>
+             <div className="summary-row"><span>Delivery</span><span>Rs. {delivery.toFixed(2)}</span></div>
+             <div className="summary-row"><span>Tax (8%)</span><span>Rs. {tax.toFixed(2)}</span></div>
+             <div className="summary-row summary-total"><span>Grand Total</span><span>Rs. {grandTotal.toFixed(2)}</span></div>
            </div>
          </div>
        </div>

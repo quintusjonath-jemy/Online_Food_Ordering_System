@@ -66,7 +66,7 @@ export default function FoodCard({ food }) {
           <span style={{ color: 'var(--clr-text-muted)', fontWeight: 400 }}>(120+)</span>
         </div>
         <div className="food-card-footer">
-          <span className="food-card-price">${Number(food.price).toFixed(2)}</span>
+          <span className="food-card-price">Rs. {Number(food.price).toFixed(2)}</span>
           <button
             className="food-card-add"
             onClick={handleAdd}

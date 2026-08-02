@@ -171,7 +171,7 @@ export default function FoodDetails() {
                               />
                               <span style={{ flex: 1 }}>{item.name}</span>
                               {Number(item.price) > 0 && (
-                                <span style={{ fontWeight: 600, color: 'var(--clr-primary)' }}>+${Number(item.price).toFixed(2)}</span>
+                                <span style={{ fontWeight: 600, color: 'var(--clr-primary)' }}>+Rs. {Number(item.price).toFixed(2)}</span>
                               )}
                             </label>
                           );
@@ -185,7 +185,7 @@ export default function FoodDetails() {
 
             {/* Price */}
             <div style={{ fontSize: 'var(--fs-3xl)', fontWeight: 900, color: 'var(--clr-primary)', marginBottom: '2rem' }}>
-              ${(Number(food.price) + selectedAddons.reduce((sum, x) => sum + x.price, 0)).toFixed(2)}
+              Rs. {(Number(food.price) + selectedAddons.reduce((sum, x) => sum + x.price, 0)).toFixed(2)}
             </div>
 
             {/* Quantity + Add */}
