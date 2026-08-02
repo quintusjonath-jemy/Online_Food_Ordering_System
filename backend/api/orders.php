@@ -27,8 +27,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
             break;
         }
         if ($isAdmin) {
-            $params = ['status' => $_GET['status'] ?? ''];
-            sendResponse(['success' => true, 'orders' => $order->getAll($params)]);
+            $userFilter = isset($_GET['user_id']) ? (int)$_GET['user_id'] : null;
+            if ($userFilter) {
+                sendResponse(['success' => true, 'orders' => $order->getByUser($userFilter)]);
+            } else {
+                $params = ['status' => $_GET['status'] ?? ''];
+                sendResponse(['success' => true, 'orders' => $order->getAll($params)]);
+            }
         } else {
             sendResponse(['success' => true, 'orders' => $order->getByUser($userId)]);
         }

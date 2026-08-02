@@ -28,8 +28,6 @@ function OrderDetail({ orderId }) {
   if (loading) return <LoadingSpinner />;
   if (!order)  return <p>Order not found.</p>;
 
-  const stepIndex = STATUS_STEPS.indexOf(order.status);
-
   return (
     <div className="slide-up">
       <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '1.5rem' }}>
@@ -37,38 +35,6 @@ function OrderDetail({ orderId }) {
         <h2 style={{ fontWeight: 700, fontSize: 'var(--fs-xl)' }}>Order #{order.id}</h2>
         <span className={`badge badge-${order.status}`}>{STATUS_LABELS[order.status]}</span>
       </div>
-
-      {/* Progress tracker */}
-      {order.status !== 'cancelled' && (
-        <div className="card" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
-          <h3 style={{ fontWeight: 700, marginBottom: '1.25rem', display: 'flex', gap: '0.5rem' }}><Clock size={18} /> Order Progress</h3>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: '20px', left: '10%', right: '10%', height: '3px', background: 'var(--clr-border)', zIndex: 0 }} />
-            <div style={{
-              position: 'absolute', top: '20px', left: '10%',
-              width: stepIndex >= 0 ? `${(stepIndex / (STATUS_STEPS.length - 1)) * 80}%` : '0%',
-              height: '3px', background: 'var(--clr-primary)', zIndex: 1, transition: 'width 0.5s ease',
-            }} />
-            {STATUS_STEPS.map((step, i) => (
-              <div key={step} style={{ textAlign: 'center', position: 'relative', zIndex: 2, flex: 1 }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: '50%', margin: '0 auto 0.5rem',
-                  background: i <= stepIndex ? 'var(--clr-primary)' : 'var(--clr-border)',
-                  color: i <= stepIndex ? 'white' : 'var(--clr-text-muted)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700,
-                  border: `2px solid ${i <= stepIndex ? 'var(--clr-primary)' : 'var(--clr-border)'}`,
-                  transition: 'all 0.3s',
-                }}>
-                  {i < stepIndex ? '✓' : i + 1}
-                </div>
-                <div style={{ fontSize: '0.7rem', fontWeight: 600, color: i <= stepIndex ? 'var(--clr-primary)' : 'var(--clr-text-muted)' }}>
-                  {STATUS_LABELS[step]}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '1.5rem', alignItems: 'start' }}>
         {/* Items */}

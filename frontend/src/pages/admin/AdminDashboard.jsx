@@ -14,7 +14,7 @@ const DASH_CARDS = (stats) => [
   { label: 'Total Customers', value: stats.total_customers, icon: <Users size={24} />,           color: '#DBEAFE', iconColor: '#1E40AF' },
   { label: 'Orders Today',    value: stats.orders_today,    icon: <ShoppingBag size={24} />,     color: '#DCFCE7', iconColor: '#166534' },
   { label: 'Bookings Today',  value: stats.reservations_today ?? 0, icon: <Calendar size={24} />, color: '#F3E8FF', iconColor: '#6B21A8' },
-  { label: 'Total Revenue',   value: `$${Number(stats.total_revenue ?? 0).toFixed(2)}`, icon: <DollarSign size={24} />, color: '#FEE2E2', iconColor: '#991B1B' },
+  { label: 'Total Revenue',   value: `Rs. ${Number(stats.total_revenue ?? 0).toFixed(2)}`, icon: <DollarSign size={24} />, color: '#FEE2E2', iconColor: '#991B1B' },
 ];
 
 export default function AdminDashboard() {
@@ -79,7 +79,7 @@ export default function AdminDashboard() {
                       <tr key={order.id}>
                         <td style={{ fontWeight: 700 }}>#{order.id}</td>
                         <td>{order.customer_name}</td>
-                        <td style={{ fontWeight: 600, color: 'var(--clr-primary)' }}>${Number(order.total_price).toFixed(2)}</td>
+                        <td style={{ fontWeight: 600, color: 'var(--clr-primary)' }}>Rs. {Number(order.total_price).toFixed(2)}</td>
                         <td><span className={`badge badge-${order.status}`}>{STATUS_LABELS[order.status]}</span></td>
                       </tr>
                     ))}

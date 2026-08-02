@@ -84,7 +84,7 @@ export default function ManageOrders() {
                       <div style={{ fontSize: '0.75rem', color: 'var(--clr-text-muted)' }}>{order.customer_email}</div>
                     </td>
                     <td style={{ fontSize: '0.8rem', color: 'var(--clr-text-muted)' }}>{new Date(order.order_date).toLocaleDateString()}</td>
-                    <td style={{ fontWeight: 700, color: 'var(--clr-primary)' }}>${Number(order.total_price).toFixed(2)}</td>
+                    <td style={{ fontWeight: 700, color: 'var(--clr-primary)' }}>Rs. {Number(order.total_price).toFixed(2)}</td>
                     <td>
                       <select
                         className="form-select"
@@ -126,7 +126,7 @@ export default function ManageOrders() {
                       { label: 'Customer', value: detail.customer_name },
                       { label: 'Status',   value: <span className={`badge badge-${detail.status}`}>{detail.status}</span> },
                       { label: 'Phone',    value: detail.phone },
-                      { label: 'Total',    value: <strong style={{ color: 'var(--clr-primary)' }}>${Number(detail.total_price).toFixed(2)}</strong> },
+                      { label: 'Total',    value: <strong style={{ color: 'var(--clr-primary)' }}>Rs. {Number(detail.total_price).toFixed(2)}</strong> },
                       { label: 'Address',  value: detail.delivery_address },
                       { label: 'Notes',    value: detail.notes || '—' },
                     ].map(({ label, value }) => (
@@ -144,9 +144,9 @@ export default function ManageOrders() {
                         <img src={img} alt={item.food_name} style={{ width: 44, height: 44, borderRadius: '8px', objectFit: 'cover' }} onError={(e) => { e.target.src = FALLBACK; }} />
                         <div style={{ flex: 1 }}>
                           <div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{item.food_name}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--clr-text-muted)' }}>×{item.quantity} @ ${Number(item.price).toFixed(2)}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--clr-text-muted)' }}>×{item.quantity} @ Rs. {Number(item.price).toFixed(2)}</div>
                         </div>
-                        <div style={{ fontWeight: 700 }}>${(item.quantity * item.price).toFixed(2)}</div>
+                        <div style={{ fontWeight: 700 }}>Rs. {(item.quantity * item.price).toFixed(2)}</div>
                       </div>
                     );
                   })}

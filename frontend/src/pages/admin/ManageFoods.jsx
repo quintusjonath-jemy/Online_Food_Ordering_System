@@ -138,7 +138,7 @@ export default function ManageFoods() {
                       <td><img src={img} alt={food.name} style={{ width: 48, height: 48, borderRadius: '8px', objectFit: 'cover' }} onError={(e) => { e.target.src = FALLBACK; }} /></td>
                       <td style={{ fontWeight: 600 }}>{food.name}</td>
                       <td><span style={{ background: 'var(--clr-bg)', padding: '0.2rem 0.6rem', borderRadius: '999px', fontSize: '0.75rem' }}>{food.category_name}</span></td>
-                      <td style={{ fontWeight: 700, color: 'var(--clr-primary)' }}>${Number(food.price).toFixed(2)}</td>
+                      <td style={{ fontWeight: 700, color: 'var(--clr-primary)' }}>Rs. {Number(food.price).toFixed(2)}</td>
                       <td>{food.stock}</td>
                       <td>{food.is_featured == 1 ? <span style={{ color: 'var(--clr-gold)', fontWeight: 700 }}>⭐ Yes</span> : '—'}</td>
                       <td>
@@ -198,7 +198,7 @@ export default function ManageFoods() {
                     {errors.category_id && <span className="form-error">{errors.category_id}</span>}
                   </div>
                   <div className="form-group">
-                    <label className="form-label">Price ($) *</label>
+                    <label className="form-label">Price (Rs.) *</label>
                     <input type="number" min="0" step="0.01" className={`form-input ${errors.price ? 'error' : ''}`} value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} id="food-price" />
                     {errors.price && <span className="form-error">{errors.price}</span>}
                   </div>

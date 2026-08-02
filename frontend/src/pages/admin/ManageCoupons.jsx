@@ -140,9 +140,9 @@ export default function ManageCoupons() {
                       </td>
                       <td style={{ textTransform: 'capitalize' }}>{c.discount_type}</td>
                       <td style={{ fontWeight: 700, color: 'var(--clr-primary)' }}>
-                        {c.discount_type === 'percentage' ? `${c.discount_value}%` : `$${Number(c.discount_value).toFixed(2)}`}
+                        {c.discount_type === 'percentage' ? `${c.discount_value}%` : `Rs. ${Number(c.discount_value).toFixed(2)}`}
                       </td>
-                      <td>${Number(c.min_order_value).toFixed(2)}</td>
+                      <td>Rs. {Number(c.min_order_value).toFixed(2)}</td>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem' }}>
                           <Calendar size={12} color="var(--clr-text-muted)" />
@@ -209,7 +209,7 @@ export default function ManageCoupons() {
                       onChange={(e) => setForm(p => ({ ...p, discount_type: e.target.value }))}
                       id="new-coupon-type"
                     >
-                      <option value="fixed">Fixed Cash ($)</option>
+                      <option value="fixed">Fixed Cash (Rs.)</option>
                       <option value="percentage">Percentage (%)</option>
                     </select>
                   </div>
@@ -235,7 +235,7 @@ export default function ManageCoupons() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div className="form-group">
                     <label className="form-label" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <DollarSign size={14} /> Min Order Spend ($)
+                      <DollarSign size={14} /> Min Order Spend (Rs.)
                     </label>
                     <input
                       type="number"
