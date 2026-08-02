@@ -35,6 +35,23 @@ export default function OrderCard({ order }) {
         <span className={`badge badge-${order.status}`}>{STATUS_LABELS[order.status]}</span>
       </div>
 
+      {/* Items Summary */}
+      {order.items_summary && (
+        <div style={{ 
+          fontSize: '0.85rem', 
+          color: 'var(--clr-text)', 
+          background: 'var(--clr-bg)', 
+          padding: '0.6rem 0.8rem', 
+          borderRadius: 'var(--radius-md)', 
+          marginBottom: 'var(--sp-4)',
+          borderLeft: '3px solid var(--clr-primary)',
+          lineHeight: 1.4
+        }}>
+          <span style={{ fontWeight: 600, color: 'var(--clr-text-muted)', marginRight: '4px' }}>Ordered:</span>
+          {order.items_summary}
+        </div>
+      )}
+
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ fontSize: 'var(--fs-sm)', color: 'var(--clr-text-muted)' }}>
           {order.item_count} item{order.item_count !== 1 ? 's' : ''}
