@@ -152,8 +152,8 @@ export default function Checkout() {
           Order #{orderId}
         </p>
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <Link to="/orders" className="btn btn-primary">Track Order</Link>
-          <Link to="/menu"   className="btn btn-outline">Order More</Link>
+          <Link to="/orders" className="btn btn-outline">View Orders</Link>
+          <Link to="/menu"   className="btn btn-primary">Order More</Link>
         </div>
       </div>
     </div>
