@@ -1139,7 +1139,7 @@ input, textarea, select { font-family: var(--font-family); }
    ============================================= */
 .toast-container {
   position: fixed;
-  bottom: var(--sp-6);
+  top: 90px;
   right: var(--sp-6);
   z-index: 9999;
   display: flex;
