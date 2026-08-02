@@ -22,6 +22,16 @@ if (!in_array($ext, $allowed, true)) {
     sendResponse(['success' => false, 'message' => 'Invalid file type. Only JPG, PNG, WEBP allowed.'], 422);
 }
 
+// Verify actual image contents and MIME type to prevent extension-spoofing
+$info = @getimagesize($file['tmp_name']);
+if ($info === false) {
+    sendResponse(['success' => false, 'message' => 'File is not a valid image.'], 422);
+}
+$allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+if (!in_array($info['mime'], $allowedMimeTypes, true)) {
+    sendResponse(['success' => false, 'message' => 'Invalid image format type.'], 422);
+}
+
 // 5MB limit
 if ($file['size'] > 5 * 1024 * 1024) {
     sendResponse(['success' => false, 'message' => 'File size must not exceed 5MB.'], 422);
