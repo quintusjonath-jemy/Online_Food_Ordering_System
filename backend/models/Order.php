@@ -126,11 +126,14 @@ class Order {
      */
     public function getByUser(int $userId): array {
         $stmt = $this->db->prepare(
-            "SELECT o.*, COUNT(oi.id) AS item_count
+            "SELECT o.*, 
+                    (SELECT COUNT(*) FROM {$this->itemsTable} oi WHERE oi.order_id = o.id) AS item_count,
+                    (SELECT GROUP_CONCAT(CONCAT(oi.quantity, 'x ', f.name) SEPARATOR ', ') 
+                     FROM {$this->itemsTable} oi 
+                     LEFT JOIN foods f ON oi.food_id = f.id 
+                     WHERE oi.order_id = o.id) AS items_summary
              FROM {$this->table} o
-             LEFT JOIN {$this->itemsTable} oi ON oi.order_id = o.id
              WHERE o.user_id = ?
-             GROUP BY o.id
              ORDER BY o.order_date DESC"
         );
         $stmt->execute([$userId]);
@@ -141,10 +144,14 @@ class Order {
      * Get all orders (admin)
      */
     public function getAll(array $params = []): array {
-        $sql    = "SELECT o.*, u.name AS customer_name, u.email AS customer_email, COUNT(oi.id) AS item_count
+        $sql    = "SELECT o.*, u.name AS customer_name, u.email AS customer_email,
+                          (SELECT COUNT(*) FROM {$this->itemsTable} oi WHERE oi.order_id = o.id) AS item_count,
+                          (SELECT GROUP_CONCAT(CONCAT(oi.quantity, 'x ', f.name) SEPARATOR ', ') 
+                           FROM {$this->itemsTable} oi 
+                           LEFT JOIN foods f ON oi.food_id = f.id 
+                           WHERE oi.order_id = o.id) AS items_summary
                    FROM {$this->table} o
-                   LEFT JOIN users u ON o.user_id = u.id
-                   LEFT JOIN {$this->itemsTable} oi ON oi.order_id = o.id";
+                   LEFT JOIN users u ON o.user_id = u.id";
         $where  = [];
         $values = [];
 
@@ -154,7 +161,7 @@ class Order {
         }
 
         if ($where) $sql .= ' WHERE ' . implode(' AND ', $where);
-        $sql .= ' GROUP BY o.id ORDER BY o.order_date DESC';
+        $sql .= ' ORDER BY o.order_date DESC';
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute($values);
