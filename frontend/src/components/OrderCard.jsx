@@ -14,7 +14,7 @@ const FALLBACK   = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445
 
 export default function OrderCard({ order }) {
   const date = new Date(order.order_date).toLocaleDateString('en-US', {
-    year: 'month', month: 'short', day: 'numeric',
+    year: 'numeric', month: 'short', day: 'numeric',
   });
 
   return (
