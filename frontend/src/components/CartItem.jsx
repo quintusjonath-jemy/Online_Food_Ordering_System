@@ -2,7 +2,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 
-const IMAGE_BASE = 'http://localhost/uploads/';
+const IMAGE_BASE = import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost/uploads/';
 const FALLBACK   = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=150&q=60';
 
 export default function CartItem({ item }) {

@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
 import { useState } from 'react';
 
-const IMAGE_BASE = 'http://localhost/uploads/';
+const IMAGE_BASE = import.meta.env.VITE_IMAGE_BASE_URL || 'http://localhost/uploads/';
 const FALLBACK   = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80';
 
 export default function FoodCard({ food }) {
