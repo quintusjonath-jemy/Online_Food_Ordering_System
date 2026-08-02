@@ -1,10 +1,11 @@
 import axios from 'axios';
+import { API_BASE_URL, IMAGE_BASE_URL } from '../config';
 
-const BASE_URL = 'http://localhost/api';
+export { API_BASE_URL, IMAGE_BASE_URL };
 
 // Create axios instance with default config
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 

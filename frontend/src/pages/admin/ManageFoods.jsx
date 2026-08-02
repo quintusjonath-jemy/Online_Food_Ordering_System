@@ -5,7 +5,7 @@ import Sidebar from '../../components/Sidebar';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import { useToast } from '../../context/ToastContext';
 
-const IMAGE_BASE = 'http://localhost/uploads/';
+import { IMAGE_BASE_URL as IMAGE_BASE } from '../../config';
 const FALLBACK   = 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=80&q=60';
 
 const EMPTY_FORM = { name: '', category_id: '', price: '', description: '', stock: 100, image: '', is_featured: 0 };
