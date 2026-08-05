@@ -35,14 +35,37 @@ switch ($_SERVER['REQUEST_METHOD']) {
         if (empty($body['email']) || empty($body['password']))
             sendResponse(['success' => false, 'message' => 'Email and password are required.'], 422);
 
-        $result = $user->login(strtolower(trim($body['email'])), $body['password']);
-        sendResponse($result, $result['success'] ? 200 : 401);
+        $email = strtolower(trim($body['email']));
+        $password = $body['password'];
+
+        // 1. Try customer login first
+        $result = $user->login($email, $password);
+        if ($result['success']) {
+            sendResponse($result, 200);
+        }
+
+        // 2. Try admin login
+        require_once __DIR__ . '/../models/Admin.php';
+        $admin = new Admin($db);
+        $resultAdmin = $admin->login($email, $password);
+        if ($resultAdmin['success']) {
+            sendResponse($resultAdmin, 200);
+        }
+
+        // 3. Fail
+        sendResponse($result, 401);
         break;
 
     // ── GET /api/auth.php (get current user profile) ────────────────────────
     case 'GET':
         $payload = requireAuth();
-        $profile = $user->findById($payload['id']);
+        if (($payload['role'] ?? '') === 'admin') {
+            require_once __DIR__ . '/../models/Admin.php';
+            $admin = new Admin($db);
+            $profile = $admin->findById($payload['id']);
+        } else {
+            $profile = $user->findById($payload['id']);
+        }
         if (!$profile) sendResponse(['success' => false, 'message' => 'User not found.'], 404);
         sendResponse(['success' => true, 'user' => $profile]);
         break;

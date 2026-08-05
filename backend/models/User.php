@@ -26,7 +26,7 @@ class User {
 
         $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
         $stmt = $this->db->prepare(
-            "INSERT INTO {$this->table} (name, email, password, phone, address, role) VALUES (?, ?, ?, ?, ?, 'customer')"
+            "INSERT INTO {$this->table} (name, email, password, phone, address) VALUES (?, ?, ?, ?, ?)"
         );
         $stmt->execute([$name, $email, $hashedPassword, $phone, $address]);
         $userId = (int) $this->db->lastInsertId();
@@ -49,8 +49,9 @@ class User {
             return ['success' => false, 'message' => 'Invalid email or password.'];
         }
 
-        $token = createJWT(['id' => $user['id'], 'email' => $user['email'], 'role' => $user['role'], 'name' => $user['name']]);
+        $token = createJWT(['id' => $user['id'], 'email' => $user['email'], 'role' => 'customer', 'name' => $user['name']]);
         unset($user['password']);
+        $user['role'] = 'customer';
 
         return ['success' => true, 'message' => 'Login successful!', 'token' => $token, 'user' => $user];
     }
@@ -59,17 +60,24 @@ class User {
      * Find user by ID (without password)
      */
     public function findById(int $id): ?array {
-        $stmt = $this->db->prepare("SELECT id, name, email, phone, address, role, loyalty_points, created_at FROM {$this->table} WHERE id = ?");
+        $stmt = $this->db->prepare("SELECT id, name, email, phone, address, loyalty_points, created_at FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
-        return $stmt->fetch() ?: null;
+        $user = $stmt->fetch();
+        if (!$user) return null;
+        $user['role'] = 'customer';
+        return $user;
     }
 
     /**
      * Get all customers (admin only)
      */
     public function getAll(): array {
-        $stmt = $this->db->query("SELECT id, name, email, phone, address, role, created_at FROM {$this->table} ORDER BY created_at DESC");
-        return $stmt->fetchAll();
+        $stmt = $this->db->query("SELECT id, name, email, phone, address, created_at FROM {$this->table} ORDER BY created_at DESC");
+        $users = $stmt->fetchAll();
+        foreach ($users as &$u) {
+            $u['role'] = 'customer';
+        }
+        return $users;
     }
 
     /**
@@ -105,18 +113,18 @@ class User {
      * Delete a user (admin only)
      */
     public function delete(int $id): array {
-        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ? AND role != 'admin'");
+        $stmt = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
         $stmt->execute([$id]);
         return $stmt->rowCount() > 0
             ? ['success' => true, 'message' => 'User deleted successfully.']
-            : ['success' => false, 'message' => 'User not found or cannot delete admin.'];
+            : ['success' => false, 'message' => 'User not found.'];
     }
 
     /**
      * Count total customers
      */
     public function countCustomers(): int {
-        $stmt = $this->db->query("SELECT COUNT(*) FROM {$this->table} WHERE role = 'customer'");
+        $stmt = $this->db->query("SELECT COUNT(*) FROM {$this->table}");
         return (int) $stmt->fetchColumn();
     }
 }
