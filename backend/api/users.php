@@ -13,7 +13,7 @@ $payload = requireAuth();
 $userId  = $payload['id'];
 
 switch ($_SERVER['REQUEST_METHOD']) {
-    // ── GET — Admin: list all users | Customer: own profile ─────────────────
+    // GET — Admin: list all users | Customer: own profile 
     case 'GET':
         if ($payload['role'] === 'admin') {
             sendResponse(['success' => true, 'users' => $user->getAll()]);
@@ -23,13 +23,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
         break;
 
-    // ── PUT — Update own profile (or admin updates any) ───────────────────
+    // PUT — Update own profile (or admin updates any)
     case 'PUT':
         $targetId = ($payload['role'] === 'admin' && $id) ? $id : $userId;
         sendResponse($user->update($targetId, $body));
         break;
 
-    // ── DELETE — Admin only ──────────────────────────────────────────────────
+    // DELETE — Admin only
     case 'DELETE':
         requireAdmin();
         if (!$id) sendResponse(['success' => false, 'message' => 'User ID required.'], 422);

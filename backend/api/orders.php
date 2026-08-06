@@ -16,7 +16,7 @@ $userId  = $payload['id'];
 $isAdmin = $payload['role'] === 'admin';
 
 switch ($_SERVER['REQUEST_METHOD']) {
-    // ── GET — Customer: own orders | Admin: all orders ───────────────────────
+    // GET — Customer: own orders | Admin: all orders
     case 'GET':
         if ($id) {
             // Get single order details (customer sees own, admin sees any)
@@ -39,7 +39,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
         break;
 
-    // ── POST — Place a new order (checkout) ──────────────────────────────────
+    // POST — Place a new order (checkout)
     case 'POST':
         // Validate delivery info
         if (empty($body['address'])) sendResponse(['success' => false, 'message' => 'Delivery address is required.'], 422);
@@ -76,8 +76,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         sendResponse($result, $result['success'] ? 201 : 400);
         break;
 
-    // ── PUT — Update order status (admin only) ───────────────────────────────
-    case 'PUT':
+    // PUT — Update order status (admin only)
         requireAdmin();
         if (!$id) sendResponse(['success' => false, 'message' => 'Order ID required.'], 422);
         if (empty($body['status'])) sendResponse(['success' => false, 'message' => 'Status is required.'], 422);

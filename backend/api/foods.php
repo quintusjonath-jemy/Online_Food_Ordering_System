@@ -10,7 +10,7 @@ $body = getRequestBody();
 $id   = isset($_GET['id']) ? (int) $_GET['id'] : null;
 
 switch ($_SERVER['REQUEST_METHOD']) {
-    // ── GET — List all or single food ───────────────────────────────────────
+    // GET — List all or single food
     case 'GET':
         if ($id) {
             $item = $food->findById($id);
@@ -28,7 +28,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         sendResponse(['success' => true, 'foods' => $foods, 'count' => count($foods)]);
         break;
 
-    // ── POST — Create food (admin) ───────────────────────────────────────────
+    // POST — Create food (admin)
     case 'POST':
         requireAdmin();
         if (empty($body['name']))        sendResponse(['success' => false, 'message' => 'Food name is required.'], 422);
@@ -39,14 +39,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
         sendResponse($food->create($body), 201);
         break;
 
-    // ── PUT — Update food (admin) ────────────────────────────────────────────
+    // PUT — Update food (admin)
     case 'PUT':
         requireAdmin();
         if (!$id) sendResponse(['success' => false, 'message' => 'Food ID is required.'], 422);
         sendResponse($food->update($id, $body));
         break;
 
-    // ── DELETE — Delete food (admin) ─────────────────────────────────────────
+    // DELETE — Delete food (admin)
     case 'DELETE':
         requireAdmin();
         if (!$id) sendResponse(['success' => false, 'message' => 'Food ID is required.'], 422);
