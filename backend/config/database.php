@@ -157,23 +157,35 @@ function requireAdmin(): array {
     return $payload;
 }
 
-// ── JWT Helpers ──────────────────────────────────────────────────────────────
+// ── JWT Cryptographic Helpers ────────────────────────────────────────────────
 $jwtSecret = getenv('JWT_SECRET') ?: ($_ENV['JWT_SECRET'] ?? 'food_ordering_secret_key_2024_very_secure');
 if (!defined('JWT_SECRET')) {
     define('JWT_SECRET', $jwtSecret);
 }
 if (!defined('JWT_EXPIRY')) {
-    define('JWT_EXPIRY', 86400); // 24 hours
+    define('JWT_EXPIRY', 86400); // 24 hours validity period
 }
 
+/**
+ * URL-safe Base64 Encoding
+ * Replaces '+' with '-', '/' with '_', and strips trailing '=' padding for standard JWT compliance.
+ */
 function base64UrlEncode(string $data): string {
     return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
 }
 
+/**
+ * URL-safe Base64 Decoding
+ * Re-adds necessary '=' padding and converts URL-safe characters back to standard base64 before decoding.
+ */
 function base64UrlDecode(string $data): string {
     return base64_decode(strtr($data, '-_', '+/') . str_repeat('=', 3 - (3 + strlen($data)) % 4));
 }
 
+/**
+ * Create a signed JSON Web Token (JWT) using HMAC-SHA256 (HS256)
+ * Generates header, attaches issued-at (iat) and expiration (exp) claims to payload, and signs with secret key.
+ */
 function createJWT(array $payload): string {
     $header    = base64UrlEncode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
     $payload['iat'] = time();
@@ -183,6 +195,10 @@ function createJWT(array $payload): string {
     return "$header.$body.$signature";
 }
 
+/**
+ * Decode and verify a signed JSON Web Token (JWT)
+ * Validates 3-part token structure, verifies HMAC-SHA256 signature using timing-attack safe hash_equals, and checks token expiration.
+ */
 function decodeJWT(string $token): ?array {
     $parts = explode('.', $token);
     if (count($parts) !== 3) return null;
