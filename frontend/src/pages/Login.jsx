@@ -111,14 +111,6 @@ export default function Login() {
             </button>
           </form>
 
-          {/* Demo credentials */}
-          <div style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(139,0,0,0.05)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(139,0,0,0.1)', fontSize: '0.8rem' }}>
-            <div style={{ fontWeight: 700, marginBottom: '0.4rem', color: 'var(--clr-primary)' }}>🔑 Demo Credentials</div>
-            <div style={{ color: 'var(--clr-text-muted)' }}>
-              <span style={{ fontWeight: 600 }}>Admin:</span> admin@foodie.com / password<br />
-              <span style={{ fontWeight: 600 }}>Customer:</span> john@example.com / password
-            </div>
-          </div>
 
           <div className="auth-link">
             Don't have an account? <Link to="/register">Create one free →</Link>
