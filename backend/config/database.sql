@@ -14,7 +14,20 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
-    role ENUM('customer', 'admin') DEFAULT 'customer',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- =============================================
+-- ADMINS TABLE
+-- =============================================
+CREATE TABLE IF NOT EXISTS admins (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    phone VARCHAR(20),
+    address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -95,10 +108,15 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- SEED DATA - Admin User
 -- Password: admin123 (hashed)
 -- =============================================
-INSERT INTO users (name, email, password, phone, address, role) VALUES
-('Administrator', 'admin@foodie.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+1-555-0100', '123 Admin Street, City', 'admin'),
-('John Smith', 'john@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+1-555-0101', '456 Oak Avenue, Springfield', 'customer'),
-('Sarah Johnson', 'sarah@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+1-555-0102', '789 Maple Drive, Shelbyville', 'customer');
+INSERT INTO admins (name, email, password, phone, address) VALUES
+('Administrator', 'admin@foodie.com', '$2y$10$/jdoRvT6LqbckzYF42.nneg1pbqV2vIZzbp5qGU7ucNqV8fyCosP2', '+1-555-0100', '123 Admin Street, City');
+
+-- =============================================
+-- SEED DATA - Customers
+-- =============================================
+INSERT INTO users (name, email, password, phone, address) VALUES
+('John Smith', 'john@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+1-555-0101', '456 Oak Avenue, Springfield'),
+('Sarah Johnson', 'sarah@example.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+1-555-0102', '789 Maple Drive, Shelbyville');
 
 -- Password for all seed users is: password
 
