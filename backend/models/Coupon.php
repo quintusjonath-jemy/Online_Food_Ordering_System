@@ -23,7 +23,8 @@ class Coupon {
     }
 
     /**
-     * Validate a coupon code against subtotal
+     * Validate a promotional coupon code against an order subtotal
+     * Checks database status, verifies date expiration timestamp, checks minimum spend threshold, and calculates savings.
      */
     public function validate(string $code, float $subtotal): array {
         $coupon = $this->findByCode($code);
@@ -44,15 +45,15 @@ class Coupon {
             ];
         }
 
-        // Check minimum order value
+        // Check minimum order value threshold
         if ($subtotal < (float)$coupon['min_order_value']) {
             return [
                 'success' => false,
-                'message' => 'Minimum order amount for this coupon is $' . number_format($coupon['min_order_value'], 2) . '.'
+                'message' => 'Minimum order amount for this coupon is Rs. ' . number_format($coupon['min_order_value'], 2) . '.'
             ];
         }
 
-        // Calculate discount
+        // Calculate discount value
         $discount = $this->calculateDiscount($coupon, $subtotal);
 
         return [
@@ -68,13 +69,14 @@ class Coupon {
     }
 
     /**
-     * Calculate discount value
+     * Calculate net discount amount based on discount type (percentage vs fixed cash)
+     * For fixed cash discounts, caps the maximum discount to the order subtotal to avoid negative totals.
      */
     private function calculateDiscount(array $coupon, float $subtotal): float {
         if ($coupon['discount_type'] === 'percentage') {
             return round(($subtotal * ((float)$coupon['discount_value'] / 100)), 2);
         } else {
-            // fixed discount
+            // Fixed cash discount — capped at order subtotal
             return min((float)$coupon['discount_value'], $subtotal);
         }
     }

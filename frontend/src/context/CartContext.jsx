@@ -2,6 +2,10 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 import { cartAPI } from '../services/api';
 import { useAuth } from './AuthContext';
 
+/**
+ * React Context for Shopping Cart Management
+ * Provides global state management for cart items, count totals, addon selections, and backend API sync.
+ */
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
@@ -11,7 +15,10 @@ export function CartProvider({ children }) {
   const [count,   setCount]   = useState(0);
   const [loading, setLoading] = useState(false);
 
-  /** Fetch cart from server */
+  /**
+   * Fetch user cart from REST API server
+   * Syncs database cart items, item counts, and subtotal metrics for authenticated customer sessions.
+   */
   const fetchCart = useCallback(async () => {
     if (!isAuthenticated) { setItems([]); setTotal(0); setCount(0); return; }
     try {
@@ -22,14 +29,17 @@ export function CartProvider({ children }) {
         setTotal(data.total  ?? 0);
         setCount(data.count  ?? 0);
       }
-    } catch { /* silent */ }
+    } catch { /* silent fallback */ }
     finally { setLoading(false); }
   }, [isAuthenticated]);
 
-  // Reload cart when auth state changes
+  // Reload cart whenever authentication state changes
   useEffect(() => { fetchCart(); }, [fetchCart]);
 
-  /** Add item to cart with custom addons */
+  /**
+   * Add food item to cart with selected customizations (toppings/drinks)
+   * Sends request to backend API and updates local cart context on success.
+   */
   const addToCart = async (foodId, quantity = 1, selectedAddons = null) => {
     if (!isAuthenticated) return false;
     try {

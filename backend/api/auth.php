@@ -1,4 +1,8 @@
 <?php
+/**
+ * Authentication API Controller
+ * Handles user registration, dual-table fallback authentication (customer vs admin), and JWT profile verification.
+ */
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/User.php';
 
@@ -9,7 +13,7 @@ $user = new User($db);
 $body = getRequestBody();
 
 switch ($_SERVER['REQUEST_METHOD']) {
-    // ── POST /api/auth.php?action=register ──────────────────────────────────
+    // POST /api/auth.php?action=register | action=login
     case 'POST':
         $action = $_GET['action'] ?? 'login';
 
@@ -56,7 +60,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         sendResponse($result, 401);
         break;
 
-    // ── GET /api/auth.php (get current user profile) ────────────────────────
+    // GET /api/auth.php (get current user profile)
     case 'GET':
         $payload = requireAuth();
         if (($payload['role'] ?? '') === 'admin') {
