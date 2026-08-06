@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 -- Password: admin123 (hashed)
 -- =============================================
 INSERT INTO admins (name, email, password, phone, address) VALUES
-('Administrator', 'admin@foodie.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+1-555-0100', '123 Admin Street, City');
+('Administrator', 'admin@foodie.com', '$2y$10$/jdoRvT6LqbckzYF42.nneg1pbqV2vIZzbp5qGU7ucNqV8fyCosP2', '+1-555-0100', '123 Admin Street, City');
 
 -- =============================================
 -- SEED DATA - Customers
