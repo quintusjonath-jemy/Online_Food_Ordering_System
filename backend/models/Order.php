@@ -123,6 +123,8 @@ class Order {
 
     /**
      * Get orders for a specific user
+     * Utilizes correlated subqueries with GROUP_CONCAT to generate a aggregated string summary of ordered items 
+     * (e.g. "2x Classic Smash Burger, 1x Artisan Lemonade") directly in SQL, avoiding ONLY_FULL_GROUP_BY strict mode errors.
      */
     public function getByUser(int $userId): array {
         $stmt = $this->db->prepare(
@@ -141,7 +143,9 @@ class Order {
     }
 
     /**
-     * Get all orders (admin)
+     * Get all orders with customer details and items summaries (Admin only)
+     * Performs a LEFT JOIN with the users table and uses inline subquery aggregation for items summaries.
+     * Supports optional status filtering.
      */
     public function getAll(array $params = []): array {
         $sql    = "SELECT o.*, u.name AS customer_name, u.email AS customer_email,
